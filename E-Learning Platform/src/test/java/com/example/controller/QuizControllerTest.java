@@ -1,0 +1,35 @@
+package com.example.controller;
+
+import com.example.model.dto.QuizResponse;
+import com.example.service.QuizService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import java.util.List;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(QuizController.class)
+class QuizControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private QuizService quizService;
+
+    @Test
+    @WithMockUser
+    void getAllQuizzes_returnsList() throws Exception {
+        QuizResponse quiz = new QuizResponse();
+        quiz.setId(1L);
+        quiz.setTitle("Test Quiz");
+        when(quizService.getAllQuizzes()).thenReturn(List.of(quiz));
+        mockMvc.perform(get("/api/quizzes").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+}
