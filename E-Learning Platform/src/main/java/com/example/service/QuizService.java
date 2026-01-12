@@ -133,6 +133,7 @@ public class QuizService {
         return toQuizResponse(quizRepository.save(quiz));
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void deleteQuiz(Long id) {
         Quiz quiz = quizRepository.findById(id).orElse(null);
         if (quiz != null) {
@@ -142,6 +143,13 @@ public class QuizService {
                 lesson.setQuiz(null);
                 lessonRepository.save(lesson);
             }
+            // Delete all quiz attempts for this quiz (to avoid FK constraint)
+            List<QuizAttempt> attempts = quizAttemptRepository.findByQuiz_Id(id);
+            for (QuizAttempt attempt : attempts) {
+                attempt.setAnswers(null); // Remove all answers
+                quizAttemptRepository.save(attempt);
+            }
+            quizAttemptRepository.deleteAll(attempts);
             // Explicitly delete all questions for this quiz (defensive, in case cascade fails)
             questionRepository.deleteAll(questionRepository.findByQuiz_Id(id));
             quizRepository.deleteById(id);

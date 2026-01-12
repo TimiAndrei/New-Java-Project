@@ -3,9 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>E-Learning Platform</title>
+  <title>My Courses</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
@@ -15,14 +14,14 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="/my-courses">My Courses</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/my-courses">My Courses</a></li>
           <li class="nav-item" th:if="${isAdmin}"><a class="nav-link" href="/users">Users</a></li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item" sec:authorize="isAuthenticated()">
+          <li class="nav-item" th:if="${displayName != null}">
             <span class="navbar-text me-2" th:text="${displayName}"></span>
           </li>
-          <li class="nav-item" sec:authorize="isAuthenticated()">
+          <li class="nav-item" th:if="${displayName != null}">
             <form th:action="@{/logout}" method="post" style="display:inline;">
               <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
             </form>
@@ -32,8 +31,25 @@
     </div>
   </nav>
   <div class="container">
-    <h1 class="mb-4">Welcome to the E-Learning Platform</h1>
-    <p>This is the MVP homepage. Use the navigation bar to explore courses, quizzes, enrollments, and users.</p>
+    <h2>My Courses</h2>
+    <div th:if="${isInstructor}">
+      <h4>Courses You Own</h4>
+      <ul>
+        <li th:each="course : ${ownedCourses}">
+          <span th:text="${course.title}"></span> - <span th:text="${course.status}"></span>
+          <a class="btn btn-info btn-sm ms-2" th:href="@{'/courses/' + ${course.id}}">See Course</a>
+        </li>
+      </ul>
+    </div>
+    <div th:if="${!isInstructor}">
+      <h4>Courses You Are Enrolled In</h4>
+      <ul>
+        <li th:each="course : ${enrolledCourses}">
+          <span th:text="${course.title}"></span> - <span th:text="${course.status}"></span>
+          <a class="btn btn-info btn-sm ms-2" th:href="@{'/courses/' + ${course.id}}">See Course</a>
+        </li>
+      </ul>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -15,6 +15,7 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link active" href="/courses">Courses</a></li>
+          <li class="nav-item"><a class="nav-link" href="/my-courses">My Courses</a></li>
           <li class="nav-item" th:if="${isAdmin}"><a class="nav-link" href="/users">Users</a></li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -56,7 +57,7 @@
               </ul>
             </div>
             <div class="mt-2">
-              <button class="btn btn-success btn-sm" th:if="${!course.enrolled}" th:onclick="|enrollCourse(${course.id})|">Enroll</button>
+              <button class="btn btn-success btn-sm" th:if="${!course.enrolled and !isInstructor}" th:onclick="|enrollCourse(${course.id})|">Enroll</button>
               <span class="badge bg-secondary" th:if="${course.enrolled}">Enrolled</span>
               <a class="btn btn-info btn-sm ms-2" th:if="${course.enrolled or isInstructor}" th:href="@{'/courses/' + ${course.id}}">See Course</a>
               <button class="btn btn-warning btn-sm ms-2" th:if="${isInstructor}" th:onclick="|openEditCourseModal(${course.id})|">Edit</button>

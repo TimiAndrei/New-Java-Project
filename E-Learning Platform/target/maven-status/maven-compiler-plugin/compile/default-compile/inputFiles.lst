@@ -18,6 +18,7 @@ C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\exa
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\QuizAttemptRepository.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\CoursePageController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\service\QuizService.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\UsersPageController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\exception\BadRequestException.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Category.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Course.java
@@ -42,6 +43,7 @@ C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\exa
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Question.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\service\CourseService.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\EnrollmentResponse.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\MyCoursesController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\UserResponse.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\CategoryRepository.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\CreateLessonRequest.java

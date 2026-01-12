@@ -16,6 +16,30 @@ import java.util.Set;
 
 @Service
 public class UserService {
+
+    public UserResponse updateUserRoles(Long id, java.util.Set<String> roles) {
+        User user = userRepository.findById(id).orElseThrow();
+        Set<Role> newRoles = new HashSet<>();
+        for (String roleName : roles) {
+            Role role = roleRepository.findByName(roleName).orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+            newRoles.add(role);
+        }
+        user.setRoles(newRoles);
+        return toUserResponse(userRepository.save(user));
+    }
+
+        public User getCurrentUser(org.springframework.security.core.Authentication auth) {
+            String email = auth.getName();
+            return userRepository.findByEmail(email).orElseThrow();
+        }
+
+        public boolean isAdmin(User user) {
+            return user.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN"));
+        }
+
+        public boolean isInstructor(User user) {
+            return user.getRoles().stream().anyMatch(r -> r.getName().equals("INSTRUCTOR"));
+        }
     @Autowired
     private UserRepository userRepository;
     @Autowired

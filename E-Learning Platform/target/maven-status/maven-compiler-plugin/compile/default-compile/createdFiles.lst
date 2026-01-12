@@ -13,6 +13,7 @@ com\example\service\QuizService.class
 com\example\model\entities\QuizAttempt.class
 com\example\model\dto\EditQuizRequest$QuestionDto.class
 com\example\service\CourseService.class
+com\example\controller\UsersPageController.class
 com\example\exception\GlobalExceptionHandler.class
 com\example\model\entities\Enrollment.class
 com\example\repository\LessonRepository.class
@@ -56,7 +57,6 @@ com\example\repository\UserRepository.class
 com\example\model\entities\Question.class
 com\example\exception\ResourceNotFoundException.class
 com\example\model\entities\CourseStatus.class
-com\example\controller\CourseController.class
 com\example\model\dto\AuditLogResponse.class
 com\example\controller\AuditLogController.class
 com\example\model\dto\QuizResponse.class

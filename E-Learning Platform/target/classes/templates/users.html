@@ -15,9 +15,18 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="/quizzes">Quizzes</a></li>
-          <li class="nav-item"><a class="nav-link" href="/enrollments">Enrollments</a></li>
-          <li class="nav-item"><a class="nav-link active" href="/users">Users</a></li>
+          <li class="nav-item"><a class="nav-link" href="/my-courses">My Courses</a></li>
+          <li class="nav-item active"><a class="nav-link active" href="/users">Users</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item" th:if="${displayName != null}">
+            <span class="navbar-text me-2" th:text="${displayName}"></span>
+          </li>
+          <li class="nav-item" th:if="${displayName != null}">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+          </li>
         </ul>
       </div>
     </div>
@@ -41,7 +50,7 @@
             <td th:text="${user.email}"></td>
             <td th:text="${user.name}"></td>
             <td>
-              <select class="form-select form-select-sm" th:field="*{user.roles}" th:attr="data-id=${user.id}" onchange="updateUserRole(this)">
+              <select class="form-select form-select-sm" th:name="roles" th:attr="data-id=${user.id}" onchange="updateUserRole(this)">
                 <option th:each="role : ${allRoles}" th:value="${role}" th:text="${role}" th:selected="${user.roles.contains(role)}"></option>
               </select>
             </td>
@@ -61,10 +70,10 @@
     function updateUserRole(select) {
       const userId = select.getAttribute('data-id');
       const selectedRole = select.value;
-      fetch(`/api/users/${userId}`, {
+      fetch(`/api/users/${userId}/roles`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roles: [selectedRole] })
+        body: JSON.stringify([selectedRole])
       })
       .then(response => {
         if (!response.ok) {

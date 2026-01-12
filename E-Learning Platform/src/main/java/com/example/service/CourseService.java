@@ -14,6 +14,17 @@ import java.util.Optional;
 
 @Service
 public class CourseService {
+
+        public List<Course> getCoursesByInstructor(Long instructorId) {
+            return courseRepository.findByInstructor_Id(instructorId);
+        }
+
+        public List<Course> getCoursesByStudent(Long studentId) {
+            return enrollmentRepository.findByStudent_Id(studentId)
+                    .stream()
+                    .map(e -> e.getCourse())
+                    .toList();
+        }
     @Autowired
     private CourseRepository courseRepository;
     @Autowired

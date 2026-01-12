@@ -23,6 +23,9 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();
 
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<QuizAttempt> attempts = new HashSet<>();
+
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -32,4 +35,6 @@ public class Quiz {
     public void setLesson(Lesson lesson) { this.lesson = lesson; }
     public Set<Question> getQuestions() { return questions; }
     public void setQuestions(Set<Question> questions) { this.questions = questions; }
+    public Set<QuizAttempt> getAttempts() { return attempts; }
+    public void setAttempts(Set<QuizAttempt> attempts) { this.attempts = attempts; }
 }
