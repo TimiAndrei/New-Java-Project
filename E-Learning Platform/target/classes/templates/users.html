@@ -34,6 +34,7 @@
   <div class="container">
     <h2>Users</h2>
     <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+      <button class="btn btn-primary mb-3" onclick="downloadUserAudit()">Download User Audit</button>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -67,6 +68,26 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    function downloadUserAudit() {
+      fetch('/api/audit-logs')
+        .then(response => response.json())
+        .then(data => {
+          const csvRows = [
+            ['ID','User ID','User Name','Action','Details','Timestamp'],
+            ...data.map(row => [row.id, row.userId, row.userName, row.action, row.details, row.timestamp])
+          ];
+          const csvContent = csvRows.map(e => e.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.setAttribute('hidden', '');
+          a.setAttribute('href', url);
+          a.setAttribute('download', 'user_audit.csv');
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+    }
     function updateUserRole(select) {
       const userId = select.getAttribute('data-id');
       const selectedRole = select.value;

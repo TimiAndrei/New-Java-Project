@@ -11,6 +11,8 @@ public class Enrollment {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "student_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     private User student;
 
     @ManyToOne

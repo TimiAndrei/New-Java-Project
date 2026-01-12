@@ -11,6 +11,8 @@ public class AuditLog {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     private User user;
 
     private String action;

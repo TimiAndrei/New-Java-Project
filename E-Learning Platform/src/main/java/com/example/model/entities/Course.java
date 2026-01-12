@@ -25,6 +25,8 @@ public class Course {
     private Category category;
 
     @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     private User instructor;
 
     @OneToMany(mappedBy = "course")

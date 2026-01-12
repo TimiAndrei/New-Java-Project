@@ -20,14 +20,17 @@ public class AuthPageController {
         @GetMapping("/")
         public String index(Model model) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            boolean isAdmin = false;
             if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
                 Object principal = auth.getPrincipal();
                 if (principal instanceof com.example.security.CustomUserDetails userDetails) {
                     model.addAttribute("displayName", userDetails.getName());
+                    isAdmin = userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
                 } else {
                     model.addAttribute("displayName", auth.getName());
                 }
             }
+            model.addAttribute("isAdmin", isAdmin);
             return "index";
         }
     @Autowired
