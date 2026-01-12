@@ -1,4 +1,6 @@
+
 package com.example.controller;
+import com.example.model.dto.EditQuizRequest;
 
 import com.example.model.dto.QuizResponse;
 import com.example.model.dto.CreateQuizRequest;
@@ -11,6 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizController {
+    @PutMapping("/{id}/edit-full")
+    public QuizResponse editQuizFull(@PathVariable Long id, @RequestBody EditQuizRequest request) {
+        return quizService.editQuizFull(id, request);
+    }
     private final QuizService quizService;
 
     @Autowired

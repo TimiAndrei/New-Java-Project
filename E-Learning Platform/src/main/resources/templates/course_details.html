@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${course.title} + ' - Details'">Course Details</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">E-Learning</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/courses">Courses</a></li>
+          <li class="nav-item" th:if="${isAdmin}"><a class="nav-link" href="/users">Users</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item" th:if="${displayName != null}">
+            <span class="navbar-text me-2" th:text="${displayName}"></span>
+          </li>
+          <li class="nav-item" th:if="${displayName != null}">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container" id="courseDetailsContainer" th:attr="data-course-id=${course.id}">
+    <h2 th:text="${course.title}"></h2>
+    <div><strong>Description:</strong> <span th:text="${course.description}"></span></div>
+    <div><strong>Difficulty:</strong> <span th:text="${course.difficulty}"></span></div>
+    <div><strong>Category:</strong> <span th:text="${course.category}"></span></div>
+    <div><strong>Status:</strong> <span th:text="${course.status}"></span></div>
+    <div><strong>Instructor:</strong> <span th:text="${course.instructor}"></span></div>
+    <hr>
+    <h4>Lessons</h4>
+    <div th:if="${isInstructor}">
+      <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addLessonModal">Add Lesson</button>
+    </div>
+    <div id="lessonsList">
+      <div th:each="lesson : ${lessons}" class="card mb-2">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${lesson.title}"></h5>
+          <div th:text="${lesson.content}"></div>
+          <div th:if="${isInstructor}">
+            <button class="btn btn-warning btn-sm me-2" th:onclick="|openEditLessonModal(${lesson.id})|">Edit</button>
+            <button class="btn btn-danger btn-sm" th:onclick="|deleteLesson(${lesson.id})|">Delete</button>
+          </div>
+          <hr />
+          <!-- Quiz Section -->
+          <div th:if="${lesson.quiz != null}">
+            <div class="d-flex align-items-center mb-2">
+              <span class="fw-bold me-2">Quiz:</span>
+              <span th:text="${lesson.quiz.title}"></span>
+              <div th:if="${isInstructor}" class="ms-auto">
+                <button class="btn btn-warning btn-sm me-2" th:attr="data-quiz-id=${lesson.quiz.id},data-quiz-title=${lesson.quiz.title},data-lesson-id=${lesson.id}" onclick="openEditQuizModalFromButton(this)">Edit Quiz</button>
+                <button class="btn btn-danger btn-sm" th:onclick="|deleteQuiz(${lesson.quiz.id})|">Delete Quiz</button>
+              </div>
+            </div>
+            <!-- Questions and Options Display -->
+            <div th:if="${lesson.quiz.questions != null}">
+              <!-- Instructor view: show correct answers highlighted -->
+              <div th:if="${isInstructor}">
+                <div th:each="question, qStat : ${lesson.quiz.questions}" class="mb-3 ms-3">
+                  <div class="fw-bold">Q[[${qStat.index}+1]]: <span th:text="${question.text}"></span></div>
+                  <ul class="list-group list-group-flush ms-3">
+                    <li class="list-group-item" th:classappend="${question.correctOptionIndex == 0} ? 'list-group-item-success' : ''">
+                      <span th:text="'A. ' + ${question.option1}"></span>
+                      <span th:if="${question.correctOptionIndex == 0}" class="badge bg-success ms-2">Correct</span>
+                    </li>
+                    <li class="list-group-item" th:classappend="${question.correctOptionIndex == 1} ? 'list-group-item-success' : ''">
+                      <span th:text="'B. ' + ${question.option2}"></span>
+                      <span th:if="${question.correctOptionIndex == 1}" class="badge bg-success ms-2">Correct</span>
+                    </li>
+                    <li class="list-group-item" th:classappend="${question.correctOptionIndex == 2} ? 'list-group-item-success' : ''">
+                      <span th:text="'C. ' + ${question.option3}"></span>
+                      <span th:if="${question.correctOptionIndex == 2}" class="badge bg-success ms-2">Correct</span>
+                    </li>
+                    <li class="list-group-item" th:classappend="${question.correctOptionIndex == 3} ? 'list-group-item-success' : ''">
+                      <span th:text="'D. ' + ${question.option4}"></span>
+                      <span th:if="${question.correctOptionIndex == 3}" class="badge bg-success ms-2">Correct</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Student view: show quiz as a form with radio buttons -->
+              <form th:if="${!isInstructor}" th:action="@{'/quizzes/' + ${lesson.quiz.id} + '/submit'}" method="post" class="quiz-form">
+                <div th:each="question, qStat : ${lesson.quiz.questions}" class="mb-3 ms-3">
+                  <div class="fw-bold">Q[[${qStat.index}+1]]: <span th:text="${question.text}"></span></div>
+                  <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" th:name="${'answers[' + question.id + ']'}" th:id="${'q' + question.id + '_0'}" value="0" required>
+                    <label class="form-check-label" th:for="${'q' + question.id + '_0'}" th:text="'A. ' + ${question.option1}"></label>
+                  </div>
+                  <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" th:name="${'answers[' + question.id + ']'}" th:id="${'q' + question.id + '_1'}" value="1">
+                    <label class="form-check-label" th:for="${'q' + question.id + '_1'}" th:text="'B. ' + ${question.option2}"></label>
+                  </div>
+                  <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" th:name="${'answers[' + question.id + ']'}" th:id="${'q' + question.id + '_2'}" value="2">
+                    <label class="form-check-label" th:for="${'q' + question.id + '_2'}" th:text="'C. ' + ${question.option3}"></label>
+                  </div>
+                  <div class="form-check ms-3">
+                    <input class="form-check-input" type="radio" th:name="${'answers[' + question.id + ']'}" th:id="${'q' + question.id + '_3'}" value="3">
+                    <label class="form-check-label" th:for="${'q' + question.id + '_3'}" th:text="'D. ' + ${question.option4}"></label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Submit Quiz</button>
+              </form>
+              <!-- Quiz result will be rendered after submission (handled by backend redirect or AJAX) -->
+            </div>
+          </div>
+          <div th:if="${lesson.quiz == null && isInstructor}">
+            <button class="btn btn-success btn-sm" th:onclick="|openAddQuizModal(${lesson.id})|">Add Quiz</button>
+          </div>
+        </div>
+      </div>
+      <!-- Quiz Modals -->
+      <div class="modal fade" id="addQuizModal" tabindex="-1" aria-labelledby="addQuizModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addQuizModalLabel">Add Quiz</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="addQuizForm">
+                <input type="hidden" id="addQuizLessonId">
+                <div class="mb-3">
+                  <label for="quizTitle" class="form-label">Quiz Title</label>
+                  <input type="text" class="form-control" id="quizTitle" name="title" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Quiz</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="editQuizModal" tabindex="-1" aria-labelledby="editQuizModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editQuizModalLabel">Edit Quiz</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editQuizForm">
+                <input type="hidden" id="editQuizId">
+                <input type="hidden" id="editQuizLessonId">
+                <div class="mb-3">
+                  <label for="editQuizTitle" class="form-label">Quiz Title</label>
+                  <input type="text" class="form-control" id="editQuizTitle" name="title" required>
+                </div>
+                <div id="editQuizQuestionsContainer"></div>
+                <button type="button" class="btn btn-secondary my-2" id="addQuestionBtn">Add Question</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add Lesson Modal -->
+    <div class="modal fade" id="addLessonModal" tabindex="-1" aria-labelledby="addLessonModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addLessonModalLabel">Add Lesson</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="addLessonForm">
+              <div class="mb-3">
+                <label for="lessonTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="lessonTitle" name="title" required>
+              </div>
+              <div class="mb-3">
+                <label for="lessonContent" class="form-label">Content</label>
+                <textarea class="form-control" id="lessonContent" name="content" required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="lessonOrder" class="form-label">Order</label>
+                <input type="number" class="form-control" id="lessonOrder" name="lessonOrder" min="1" required>
+              </div>
+              <button type="submit" class="btn btn-success">Add Lesson</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Lesson Modal -->
+    <div class="modal fade" id="editLessonModal" tabindex="-1" aria-labelledby="editLessonModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editLessonModalLabel">Edit Lesson</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editLessonForm">
+              <input type="hidden" id="editLessonId">
+              <div class="mb-3">
+                <label for="editLessonTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="editLessonTitle" name="title" required>
+              </div>
+              <div class="mb-3">
+                <label for="editLessonContent" class="form-label">Content</label>
+                <textarea class="form-control" id="editLessonContent" name="content" required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="editLessonOrder" class="form-label">Order</label>
+                <input type="number" class="form-control" id="editLessonOrder" name="lessonOrder" min="1" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/course_details.js"></script>
+  </div>
+</body>
+
+</html>

@@ -24,26 +24,68 @@
   </nav>
   <div class="container">
     <h2>Users</h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Name</th>
-          <th>Roles</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="user : ${users}">
-          <td th:text="${user.id}"></td>
-          <td th:text="${user.email}"></td>
-          <td th:text="${user.name}"></td>
-          <td th:text="${user.roles}"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Roles</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.name}"></td>
+            <td>
+              <select class="form-select form-select-sm" th:field="*{user.roles}" th:attr="data-id=${user.id}" onchange="updateUserRole(this)">
+                <option th:each="role : ${allRoles}" th:value="${role}" th:text="${role}" th:selected="${user.roles.contains(role)}"></option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm" th:attr="data-id=${user.id}" onclick="deleteUser(this)">Delete account</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div th:unless="${#authorization.expression('hasRole(''ADMIN'')')}">
+      <div class="alert alert-danger">Access denied. Admins only.</div>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateUserRole(select) {
+      const userId = select.getAttribute('data-id');
+      const selectedRole = select.value;
+      fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roles: [selectedRole] })
+      })
+      .then(response => {
+        if (!response.ok) {
+          response.text().then(text => alert('Failed to update role: ' + text));
+        }
+      });
+    }
+    function deleteUser(btn) {
+      const userId = btn.getAttribute('data-id');
+      if (confirm('Are you sure you want to delete this account?')) {
+        fetch(`/api/users/${userId}`, { method: 'DELETE' })
+          .then(response => {
+            if (response.ok) {
+              location.reload();
+            } else {
+              response.text().then(text => alert('Failed to delete user: ' + text));
+            }
+          });
+      }
+    }
+  </script>
 </body>
 
 </html>

@@ -38,6 +38,8 @@ class QuizServiceTest {
     void getAllQuizzes_returnsList() {
         Quiz quiz = new Quiz();
         quiz.setId(1L);
+        // Use 'quiz' in the test to avoid unused warning
+        assertNotNull(quiz);
         when(quizRepository.findAll()).thenReturn(List.of(quiz));
         List<QuizResponse> result = quizService.getAllQuizzes();
         assertEquals(1, result.size());

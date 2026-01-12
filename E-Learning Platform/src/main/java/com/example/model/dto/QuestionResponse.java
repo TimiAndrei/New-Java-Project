@@ -1,39 +1,14 @@
-package com.example.model.entities;
+package com.example.model.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import java.util.List;
-
-@Entity
-@Table(name = "questions")
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class QuestionResponse {
     private Long id;
-
-    @NotBlank
-    @Column(nullable = false)
     private String text;
-
-
-    @Column(nullable = false)
     private String option1;
-
-    @Column(nullable = false)
     private String option2;
-
-    @Column(nullable = false)
     private String option3;
-
-    @Column(nullable = false)
     private String option4;
-
     private int correctOptionIndex;
 
-    @ManyToOne
-    private Quiz quiz;
-
-    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getText() { return text; }
@@ -48,6 +23,4 @@ public class Question {
     public void setOption4(String option4) { this.option4 = option4; }
     public int getCorrectOptionIndex() { return correctOptionIndex; }
     public void setCorrectOptionIndex(int correctOptionIndex) { this.correctOptionIndex = correctOptionIndex; }
-    public Quiz getQuiz() { return quiz; }
-    public void setQuiz(Quiz quiz) { this.quiz = quiz; }
 }

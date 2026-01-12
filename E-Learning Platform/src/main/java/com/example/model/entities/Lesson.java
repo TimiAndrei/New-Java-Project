@@ -1,8 +1,8 @@
 package com.example.model.entities;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+// removed unused imports
 
 @Entity
 @Table(name = "lessons")
@@ -19,10 +19,14 @@ public class Lesson {
 
     private int lessonOrder;
 
+
     @ManyToOne
+    @JsonIgnore
     private Course course;
 
-    @OneToOne(mappedBy = "lesson")
+
+    @OneToOne(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Quiz quiz;
 
     // Getters and setters

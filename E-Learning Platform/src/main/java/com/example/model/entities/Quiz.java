@@ -20,7 +20,7 @@ public class Quiz {
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Question> questions = new HashSet<>();
 
     // Getters and setters

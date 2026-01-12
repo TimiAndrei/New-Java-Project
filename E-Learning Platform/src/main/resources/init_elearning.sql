@@ -1,4 +1,3 @@
-
 -- Create schema for the e-learning platform
 
 INSERT INTO role (name) VALUES ('STUDENT');
@@ -70,12 +69,12 @@ INSERT INTO quizzes (title, lesson_id) SELECT 'Algebra Foundations Quiz', id FRO
 INSERT INTO quizzes (title, lesson_id) SELECT 'Python Basics Quiz', id FROM lessons WHERE title = 'Python Basics';
 INSERT INTO quizzes (title, lesson_id) SELECT 'Logic and Proofs Quiz', id FROM lessons WHERE title = 'Logic and Proofs';
 
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'What is JVM?', id, 0 FROM quizzes WHERE title = 'Java Basics Quiz';
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'Which keyword is used for inheritance in Java?', id, 1 FROM quizzes WHERE title = 'Java Basics Quiz';
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'What is encapsulation?', id, 0 FROM quizzes WHERE title = 'Java OOP Quiz';
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'Solve: 2x + 3 = 7. What is x?', id, 0 FROM quizzes WHERE title = 'Algebra Foundations Quiz';
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'Which library is used for dataframes in Python?', id, 0 FROM quizzes WHERE title = 'Python Basics Quiz';
-INSERT INTO questions (text, quiz_id, correct_option_index) SELECT 'What is a tautology in logic?', id, 0 FROM quizzes WHERE title = 'Logic and Proofs Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'What is JVM?', id, 0, 'Java Virtual Machine', 'Java Vendor Module', 'Just-in-time Value Mapper', 'Java Version Manager' FROM quizzes WHERE title = 'Java Basics Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'Which keyword is used for inheritance in Java?', id, 1, 'extends', 'implements', 'inherits', 'instanceof' FROM quizzes WHERE title = 'Java Basics Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'What is encapsulation?', id, 0, 'Wrapping data and code together', 'Inheritance of methods', 'Overloading operators', 'Polymorphism' FROM quizzes WHERE title = 'Java OOP Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'Solve: 2x + 3 = 7. What is x?', id, 0, '2', '3', '4', '1' FROM quizzes WHERE title = 'Algebra Foundations Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'Which library is used for dataframes in Python?', id, 0, 'Pandas', 'NumPy', 'Matplotlib', 'SciPy' FROM quizzes WHERE title = 'Python Basics Quiz';
+INSERT INTO questions (text, quiz_id, correct_option_index, option1, option2, option3, option4) SELECT 'What is a tautology in logic?', id, 0, 'A statement that is always true', 'A statement that is always false', 'A statement that is sometimes true', 'A statement that cannot be proven' FROM quizzes WHERE title = 'Logic and Proofs Quiz';
 
 INSERT INTO enrollments (student_id, course_id, enrolled_at)
 SELECT u.id, c.id, NOW() FROM users u, course c WHERE u.email = 'student@example.com' AND c.title = 'Java Masterclass';

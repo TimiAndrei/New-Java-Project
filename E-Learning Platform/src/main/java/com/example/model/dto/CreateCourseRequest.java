@@ -5,7 +5,7 @@ public class CreateCourseRequest {
     private String description;
     private String difficulty;
     private Long categoryId;
-    private Long instructorId;
+    private Long instructorId; // will be set by backend only
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

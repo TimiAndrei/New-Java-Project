@@ -25,6 +25,10 @@ class CourseServiceTest {
     private CategoryRepository categoryRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private com.example.repository.LessonRepository lessonRepository;
+    @Mock
+    private com.example.repository.EnrollmentRepository enrollmentRepository;
     @InjectMocks
     private CourseService courseService;
 
@@ -37,8 +41,13 @@ class CourseServiceTest {
     void getAllCourses_returnsList() {
         Course course = new Course();
         course.setId(1L);
+        Long userId = 42L;
         when(courseRepository.findAll()).thenReturn(List.of(course));
-        List<CourseResponse> result = courseService.getAllCourses();
+        when(lessonRepository.findByCourse_Id(1L)).thenReturn(List.of());
+        com.example.model.entities.Enrollment enrollment = mock(com.example.model.entities.Enrollment.class);
+        when(enrollment.getCourse()).thenReturn(course);
+        when(enrollmentRepository.findByStudent_Id(userId)).thenReturn(List.of(enrollment));
+        List<CourseResponse> result = courseService.getAllCourses(userId);
         assertEquals(1, result.size());
     }
 
@@ -47,6 +56,7 @@ class CourseServiceTest {
         Course course = new Course();
         course.setId(1L);
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(lessonRepository.findByCourse_Id(1L)).thenReturn(List.of());
         Optional<CourseResponse> result = courseService.getCourseById(1L);
         assertTrue(result.isPresent());
     }
@@ -64,6 +74,7 @@ class CourseServiceTest {
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(cat));
         when(userRepository.findById(3L)).thenReturn(Optional.of(instructor));
         when(courseRepository.save(any(Course.class))).thenAnswer(i -> { Course c = i.getArgument(0); c.setId(1L); return c; });
+        when(lessonRepository.findByCourse_Id(1L)).thenReturn(List.of());
         CourseResponse res = courseService.createCourse(req);
         assertEquals("Test", res.getTitle());
     }

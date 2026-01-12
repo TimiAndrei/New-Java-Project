@@ -4,6 +4,7 @@ import com.example.model.entities.*;
 import com.example.repository.CourseRepository;
 import com.example.repository.CategoryRepository;
 import com.example.repository.UserRepository;
+import com.example.repository.EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,14 +21,35 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
-        public List<CourseResponse> getAllCourses() {
+    @Autowired
+    private com.example.repository.LessonRepository lessonRepository;
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
+    // Check if user is instructor of course
+    public boolean isInstructorOfCourse(Long userId, Long courseId) {
+        return courseRepository.findById(courseId)
+                .map(c -> c.getInstructor() != null && c.getInstructor().getId().equals(userId))
+                .orElse(false);
+    }
+
+        public List<CourseResponse> getAllCourses(Long userId) {
             List<Course> courses = courseRepository.findAll();
+            final List<Long> enrolledCourseIds = (userId != null)
+                ? enrollmentRepository.findByStudent_Id(userId).stream().map(e -> e.getCourse().getId()).toList()
+                : null;
             System.out.println("DEBUG: Found " + courses.size() + " courses in DB");
-            return courses.stream().map(this::toCourseResponse).toList();
+            return courses.stream().map(c -> toCourseResponse(c, enrolledCourseIds)).toList();
         }
 
         public Optional<CourseResponse> getCourseById(Long id) {
             return courseRepository.findById(id).map(this::toCourseResponse);
+        }
+
+        // Overload for single course (no enrolled info)
+        private CourseResponse toCourseResponse(Course course) {
+            return toCourseResponse(course, null);
         }
 
         public CourseResponse createCourse(CreateCourseRequest request) {
@@ -57,7 +79,7 @@ public class CourseService {
             courseRepository.deleteById(id);
         }
 
-        private CourseResponse toCourseResponse(Course course) {
+        private CourseResponse toCourseResponse(Course course, List<Long> enrolledCourseIds) {
             CourseResponse dto = new CourseResponse();
             dto.setId(course.getId());
             dto.setTitle(course.getTitle());
@@ -66,6 +88,14 @@ public class CourseService {
             dto.setCategory(course.getCategory() != null ? course.getCategory().getName() : null);
             dto.setInstructor(course.getInstructor() != null ? course.getInstructor().getName() : null);
             dto.setStatus(course.getStatus() != null ? course.getStatus().name() : null);
+            List<String> lessonTitles = lessonRepository.findByCourse_Id(course.getId())
+                .stream().map(l -> l.getTitle()).toList();
+            dto.setLessonTitles(lessonTitles);
+            if (enrolledCourseIds != null) {
+                dto.setEnrolled(enrolledCourseIds.contains(course.getId()));
+            } else {
+                dto.setEnrolled(false);
+            }
             return dto;
         }
 

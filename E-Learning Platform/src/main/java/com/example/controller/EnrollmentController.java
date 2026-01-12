@@ -29,7 +29,17 @@ public class EnrollmentController {
     }
 
     @PostMapping
-    public EnrollmentResponse createEnrollment(@RequestBody CreateEnrollmentRequest request) {
+    public EnrollmentResponse createEnrollment(@RequestBody CreateEnrollmentRequest request, org.springframework.security.core.Authentication authentication) {
+        if (request.getStudentId() == null && authentication != null) {
+            // Use authenticated user as student
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof com.example.security.CustomUserDetails userDetails) {
+                com.example.model.entities.User user = userDetails.getUser();
+                request.setStudentId(user.getId());
+            } else {
+                throw new RuntimeException("Authenticated principal is not CustomUserDetails");
+            }
+        }
         return enrollmentService.createEnrollment(request);
     }
 

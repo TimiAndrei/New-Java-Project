@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Enrollments - E-Learning Platform</title>
+  <title>My Courses - E-Learning Platform</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -23,27 +23,52 @@
     </div>
   </nav>
   <div class="container">
-    <h2>Enrollments</h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Student</th>
-          <th>Course</th>
-          <th>Enrolled At</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="enrollment : ${enrollments}">
-          <td th:text="${enrollment.id}"></td>
-          <td th:text="${enrollment.studentName}"></td>
-          <td th:text="${enrollment.courseTitle}"></td>
-          <td th:text="${enrollment.enrolledAt}"></td>
-        </tr>
-      </tbody>
-    </table>
+    <h2>My Courses</h2>
+    <div th:each="enrollment : ${enrollments}">
+      <div class="card mb-3">
+        <div class="card-header">
+          <strong th:text="${enrollment.courseTitle}"></strong>
+          <span class="text-muted" th:text="${enrollment.enrolledAt}"></span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li th:each="lesson : ${enrollment.lessons}">
+              <div>
+                <span th:text="${lesson.title}"></span>
+                <div th:if="${lesson.quizTitle != null}">
+                  <button class="btn btn-primary btn-sm" th:onclick="|showQuizModal('${lesson.quizTitle}', ${lesson.quizId})|">Take Quiz: <span th:text="${lesson.quizTitle}"></span></button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Quiz Modal -->
+    <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="quizModalLabel">Quiz</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="quizModalBody">
+            <!-- Quiz content will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showQuizModal(quizTitle, quizId) {
+      document.getElementById('quizModalLabel').textContent = quizTitle;
+      // TODO: Load quiz questions via AJAX and render in modal
+      document.getElementById('quizModalBody').innerHTML = '<p>Quiz content for ' + quizTitle + ' (ID: ' + quizId + ') will load here.</p>';
+      var quizModal = new bootstrap.Modal(document.getElementById('quizModal'));
+      quizModal.show();
+    }
+  </script>
 </body>
 
 </html>

@@ -15,44 +15,287 @@
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link active" href="/courses">Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="/quizzes">Quizzes</a></li>
-          <li class="nav-item"><a class="nav-link" href="/enrollments">Enrollments</a></li>
-          <li class="nav-item"><a class="nav-link" href="/users">Users</a></li>
+          <li class="nav-item" th:if="${isAdmin}"><a class="nav-link" href="/users">Users</a></li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item" th:if="${displayName != null}">
+            <span class="navbar-text me-2" th:text="${displayName}"></span>
+          </li>
+          <li class="nav-item" th:if="${displayName != null}">
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
   <div class="container">
     <h2>Courses</h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Difficulty</th>
-          <th>Category</th>
-          <th>Instructor</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="course : ${courses}">
-          <td th:text="${course.id}"></td>
-          <td th:text="${course.title}"></td>
-          <td th:text="${course.description}"></td>
-          <td th:text="${course.difficulty}"></td>
-          <td th:text="${course.category}"></td>
-          <td th:text="${course.instructor}"></td>
-          <td th:text="${course.status}"></td>
-          <td>
-            <a th:href="@{'/courses/' + ${course.id} + '/lessons'}" class="btn btn-info btn-sm">View Lessons</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div th:if="${isInstructor}">
+      <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createCourseModal">Add Course</button>
+    </div>
+    <div class="accordion" id="coursesAccordion">
+      <div class="accordion-item" th:each="course, iterStat : ${courses}">
+        <h2 class="accordion-header" th:id="'heading-' + ${course.id}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapse-' + ${course.id}" aria-expanded="false" th:aria-controls="'collapse-' + ${course.id}">
+            <span th:text="${course.title}"></span> &nbsp; <span class="text-muted" th:text="${course.status}"></span>
+          </button>
+        </h2>
+        <div class="accordion-collapse collapse" th:id="'collapse-' + ${course.id}" th:attr="aria-labelledby='heading-' + ${course.id}" data-bs-parent="#coursesAccordion">
+          <div class="accordion-body">
+            <div><strong>ID:</strong> <span th:text="${course.id}"></span></div>
+            <div><strong>Description:</strong> <span th:text="${course.description}"></span></div>
+            <div><strong>Difficulty:</strong> <span th:text="${course.difficulty}"></span></div>
+            <div><strong>Category:</strong> <span th:text="${course.category}"></span></div>
+            <div><strong>Instructor:</strong> <span th:text="${course.instructor}"></span></div>
+            <div class="mt-2">
+              <strong>Lessons:</strong>
+              <ul>
+                <li th:each="lessonTitle : ${course.lessonTitles}" th:text="${lessonTitle}"></li>
+              </ul>
+            </div>
+            <div class="mt-2">
+              <button class="btn btn-success btn-sm" th:if="${!course.enrolled}" th:onclick="|enrollCourse(${course.id})|">Enroll</button>
+              <span class="badge bg-secondary" th:if="${course.enrolled}">Enrolled</span>
+              <a class="btn btn-info btn-sm ms-2" th:if="${course.enrolled or isInstructor}" th:href="@{'/courses/' + ${course.id}}">See Course</a>
+              <button class="btn btn-warning btn-sm ms-2" th:if="${isInstructor}" th:onclick="|openEditCourseModal(${course.id})|">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Create Course Modal -->
+      <div class="modal fade" id="createCourseModal" tabindex="-1" aria-labelledby="createCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createCourseModalLabel">Create New Course</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="createCourseForm">
+                <div class="mb-3">
+                  <label for="courseTitle" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="courseTitle" name="title" required>
+                </div>
+                <div class="mb-3">
+                  <label for="courseDescription" class="form-label">Description</label>
+                  <textarea class="form-control" id="courseDescription" name="description" required></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="courseDifficulty" class="form-label">Difficulty</label>
+                  <select class="form-select" id="courseDifficulty" name="difficulty" required></select>
+                </div>
+                <div class="mb-3">
+                  <label for="courseCategory" class="form-label">Category</label>
+                  <select class="form-select" id="courseCategory" name="categoryId" required></select>
+                </div>
+                <button type="submit" class="btn btn-success">Create</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Edit Course Modal -->
+      <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editCourseForm">
+                <input type="hidden" id="editCourseId">
+                <div class="mb-3">
+                  <label for="editCourseTitle" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="editCourseTitle" name="title" required>
+                </div>
+                <div class="mb-3">
+                  <label for="editCourseDescription" class="form-label">Description</label>
+                  <textarea class="form-control" id="editCourseDescription" name="description" required></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="editCourseDifficulty" class="form-label">Difficulty</label>
+                  <select class="form-select" id="editCourseDifficulty" name="difficulty" required></select>
+                </div>
+                <div class="mb-3">
+                  <label for="editCourseCategory" class="form-label">Category</label>
+                  <select class="form-select" id="editCourseCategory" name="categoryId" required></select>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Helper to populate select options
+          function populateSelect(selectId, options, valueKey, textKey) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '';
+            options.forEach(opt => {
+              const option = document.createElement('option');
+              option.value = valueKey ? opt[valueKey] : opt;
+              option.textContent = textKey ? opt[textKey] : (opt.charAt(0) + opt.slice(1).toLowerCase());
+              select.appendChild(option);
+            });
+          }
+
+          // Populate Add modal categories/difficulties
+          fetch('/api/courses/categories')
+            .then(res => res.json())
+            .then(categories => populateSelect('courseCategory', categories, 'id', 'name'));
+          fetch('/api/courses/difficulties')
+            .then(res => res.json())
+            .then(difficulties => populateSelect('courseDifficulty', difficulties));
+
+          // Handle Add form submit
+          var form = document.getElementById('createCourseForm');
+          if (form) {
+            form.addEventListener('submit', function(e) {
+              e.preventDefault();
+              const data = {
+                title: document.getElementById('courseTitle').value,
+                description: document.getElementById('courseDescription').value,
+                difficulty: document.getElementById('courseDifficulty').value,
+                categoryId: document.getElementById('courseCategory').value
+              };
+              fetch('/api/courses', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (response.ok) {
+                    location.reload();
+                  } else {
+                    response.text().then(text => alert('Failed to create course: ' + text));
+                  }
+                })
+                .catch(error => alert('Error: ' + error));
+            });
+          }
+
+          // Populate Edit modal categories/difficulties
+          let editCategories = [];
+          let editDifficulties = [];
+          fetch('/api/courses/categories')
+            .then(res => res.json())
+            .then(categories => {
+              editCategories = categories;
+              populateSelect('editCourseCategory', categories, 'id', 'name');
+            });
+          fetch('/api/courses/difficulties')
+            .then(res => res.json())
+            .then(difficulties => {
+              editDifficulties = difficulties;
+              populateSelect('editCourseDifficulty', difficulties);
+            });
+
+          // Handle Edit form submit
+          var editForm = document.getElementById('editCourseForm');
+          if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+              e.preventDefault();
+              const courseId = document.getElementById('editCourseId').value;
+              if (!courseId) {
+                alert('Course ID is missing. Cannot update.');
+                return;
+              }
+              const data = {
+                title: document.getElementById('editCourseTitle').value,
+                description: document.getElementById('editCourseDescription').value,
+                difficulty: document.getElementById('editCourseDifficulty').value,
+                categoryId: document.getElementById('editCourseCategory').value
+              };
+              fetch(`/api/courses/${courseId}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                })
+                .then(response => {
+                  if (response.ok) {
+                    location.reload();
+                  } else {
+                    response.text().then(text => alert('Failed to update course: ' + text));
+                  }
+                })
+                .catch(error => alert('Error: ' + error));
+            });
+          }
+        });
+
+        function openEditCourseModal(courseId) {
+          // Fetch course data and populate modal
+          fetch(`/api/courses/${courseId}`)
+            .then(res => res.json())
+            .then(course => {
+              document.getElementById('editCourseId').value = course.id;
+              document.getElementById('editCourseTitle').value = course.title;
+              document.getElementById('editCourseDescription').value = course.description;
+              // Wait for selects to be populated
+              setTimeout(() => {
+                document.getElementById('editCourseDifficulty').value = course.difficulty;
+                // Find category id by name (if needed)
+                const catSelect = document.getElementById('editCourseCategory');
+                for (let i = 0; i < catSelect.options.length; i++) {
+                  if (catSelect.options[i].text === course.category) {
+                    catSelect.selectedIndex = i;
+                    break;
+                  }
+                }
+              }, 200);
+              var editModal = new bootstrap.Modal(document.getElementById('editCourseModal'));
+              editModal.show();
+            })
+            .catch(() => alert('Failed to load course data.'));
+        }
+      </script>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function enrollCourse(courseId) {
+      fetch('/api/enrollments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            courseId: courseId
+          })
+        })
+        .then(response => {
+          if (response.ok) {
+            // Hide enroll button and show badge
+            const accordionItem = document.querySelector(`[id='heading-${courseId}']`).closest('.accordion-item');
+            const enrollBtn = accordionItem.querySelector('button.btn-success');
+            const badge = accordionItem.querySelector('.badge.bg-secondary');
+            if (enrollBtn) enrollBtn.style.display = 'none';
+            if (badge) badge.style.display = '';
+            else {
+              // If badge doesn't exist, create it
+              const badgeElem = document.createElement('span');
+              badgeElem.className = 'badge bg-secondary';
+              badgeElem.innerText = 'Enrolled';
+              enrollBtn.parentNode.appendChild(badgeElem);
+            }
+          } else {
+            response.text().then(text => alert('Enrollment failed: ' + text));
+          }
+        })
+        .catch(error => {
+          alert('Enrollment error: ' + error);
+        });
+    }
+  </script>
 </body>
 
 </html>

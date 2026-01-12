@@ -1,3 +1,4 @@
+com\example\model\dto\QuestionResponse.class
 com\example\controller\AuthController.class
 com\example\model\dto\CourseResponse.class
 com\example\model\dto\EnrollmentResponse.class
@@ -10,6 +11,7 @@ com\example\model\dto\UserResponse.class
 com\example\repository\EnrollmentRepository.class
 com\example\service\QuizService.class
 com\example\model\entities\QuizAttempt.class
+com\example\model\dto\EditQuizRequest$QuestionDto.class
 com\example\service\CourseService.class
 com\example\exception\GlobalExceptionHandler.class
 com\example\model\entities\Enrollment.class
@@ -25,10 +27,12 @@ com\example\controller\CoursesPageController.class
 com\example\model\entities\AuditLog.class
 com\example\model\dto\CreateEnrollmentRequest.class
 com\example\model\entities\Quiz.class
+com\example\model\dto\EditQuizRequest.class
 com\example\security\CustomUserDetails.class
 com\example\model\dto\CreateLessonRequest.class
 com\example\service\EnrollmentService.class
 com\example\controller\UserController.class
+com\example\model\dto\MyQuizResponse.class
 com\example\model\entities\Category.class
 com\example\model\entities\DifficultyLevel.class
 com\example\repository\QuestionRepository.class
@@ -38,6 +42,7 @@ com\example\model\entities\User.class
 com\example\controller\QuizController.class
 com\example\repository\CategoryRepository.class
 com\example\repository\QuizAttemptRepository.class
+com\example\controller\QuizAttemptController.class
 com\example\controller\AuthPageController.class
 com\example\config\SecurityConfig.class
 com\example\ElearningPlatformApplication.class
@@ -46,6 +51,7 @@ com\example\controller\EnrollmentController.class
 com\example\model\entities\Course.class
 com\example\model\entities\Role.class
 com\example\controller\LessonController.class
+com\example\controller\CoursePageController.class
 com\example\repository\UserRepository.class
 com\example\model\entities\Question.class
 com\example\exception\ResourceNotFoundException.class

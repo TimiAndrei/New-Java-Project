@@ -1,4 +1,5 @@
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\config\SecurityConfig.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\QuestionResponse.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\QuizRepository.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\AuditLogResponse.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\User.java
@@ -15,11 +16,13 @@ C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\exa
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\CreateQuizRequest.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\CreateUserRequest.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\QuizAttemptRepository.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\CoursePageController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\service\QuizService.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\exception\BadRequestException.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Category.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Course.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\exception\GlobalExceptionHandler.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\EditQuizRequest.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\EnrollmentRepository.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\QuizController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\QuizzesPageController.java
@@ -44,6 +47,7 @@ C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\exa
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\CreateLessonRequest.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\config\SwaggerConfig.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\CreateCourseRequest.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\dto\MyQuizResponse.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\CourseRepository.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Role.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\LessonRepository.java
@@ -54,3 +58,4 @@ C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\exa
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\CoursesPageController.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\model\entities\Lesson.java
 C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\repository\QuestionRepository.java
+C:\Users\Timi\Desktop\New Java Project\E-Learning Platform\src\main\java\com\example\controller\QuizAttemptController.java
