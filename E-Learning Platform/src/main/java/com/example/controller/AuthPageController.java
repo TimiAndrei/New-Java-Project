@@ -4,8 +4,6 @@ package com.example.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-// removed unused imports
-
 import com.example.model.dto.CreateUserRequest;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

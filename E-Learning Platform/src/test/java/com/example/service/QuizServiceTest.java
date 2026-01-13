@@ -38,7 +38,6 @@ class QuizServiceTest {
     void getAllQuizzes_returnsList() {
         Quiz quiz = new Quiz();
         quiz.setId(1L);
-        // Use 'quiz' in the test to avoid unused warning
         assertNotNull(quiz);
         when(quizRepository.findAll()).thenReturn(List.of(quiz));
         List<QuizResponse> result = quizService.getAllQuizzes();
@@ -58,7 +57,6 @@ class QuizServiceTest {
     void createQuiz_success() {
         CreateQuizRequest req = new CreateQuizRequest();
         req.setTitle("Test Quiz");
-        Quiz quiz = new Quiz();
         when(quizRepository.save(any(Quiz.class))).thenAnswer(i -> { Quiz q = i.getArgument(0); q.setId(1L); return q; });
         QuizResponse res = quizService.createQuiz(req);
         assertEquals("Test Quiz", res.getTitle());

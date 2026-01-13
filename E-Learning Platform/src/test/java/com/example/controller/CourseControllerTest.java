@@ -33,7 +33,6 @@ class CourseControllerTest {
         CourseResponse course = new CourseResponse();
         course.setId(1L);
         course.setTitle("Test Course");
-        // Accept any userId (nullable) since controller may pass null
         when(courseService.getAllCourses(org.mockito.ArgumentMatchers.<Long>any())).thenReturn(List.of(course));
         mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());

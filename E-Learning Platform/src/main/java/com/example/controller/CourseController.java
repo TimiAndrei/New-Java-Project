@@ -100,7 +100,6 @@ public class CourseController {
         courseService.deleteCourse(id);
     }
 
-    // --- Course status endpoints ---
     @PostMapping("/{id}/publish")
     public ResponseEntity<?> publishCourse(@PathVariable Long id) {
         // Only instructors can publish

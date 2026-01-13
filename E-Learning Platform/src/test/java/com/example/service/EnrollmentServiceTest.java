@@ -103,7 +103,6 @@ class EnrollmentServiceTest {
         when(enrollmentRepository.save(any(Enrollment.class))).thenAnswer(i -> { Enrollment e = i.getArgument(0); e.setId(1L); return e; });
         EnrollmentResponse res1 = enrollmentService.createEnrollment(req);
         assertNotNull(res1);
-        // Simulez duplicate: nu ar trebui să arunce, dar se poate extinde logica pentru duplicate handling
         EnrollmentResponse res2 = enrollmentService.createEnrollment(req);
         assertNotNull(res2);
     }

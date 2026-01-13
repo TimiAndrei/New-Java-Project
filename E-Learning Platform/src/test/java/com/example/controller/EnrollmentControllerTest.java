@@ -77,7 +77,6 @@ class EnrollmentControllerTest {
     @Test
     @WithMockUser
     void createEnrollment_invalidRequest() throws Exception {
-        // Simulez eroare la service
         when(enrollmentService.createEnrollment(any())).thenThrow(new RuntimeException("Invalid"));
         String json = "{\"studentId\":2,\"courseId\":3}";
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/enrollments")
